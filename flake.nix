@@ -28,7 +28,8 @@
             openssl
           ];
 
-          DATABASE_URL="database/expense-tracker.sqlite";
+          # TODO update the database url
+          DATABASE_URL = "sqlite:./database/expanse-tracker.sqlite";
           OTEL_EXPORTER_OTLP_ENDPOINT = "http://localhost:4317";
           OTEL_TRACES_EXPORTER = "otlp";
           OTEL_EXPORTER_OTLP_PROTOCOL = "grpc";
