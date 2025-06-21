@@ -26,6 +26,7 @@
             # optional dependencies to make RESTapi request from Neovim
             pkg-config
             openssl
+            sqlite
           ];
 
           # TODO update the database url

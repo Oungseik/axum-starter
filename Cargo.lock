@@ -199,6 +199,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "axum-starter"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "axum-tracing-opentelemetry",
+ "clap",
+ "dotenv",
+ "init-tracing-opentelemetry",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tokio",
+ "tower-http",
+ "tracing",
+ "utoipa",
+ "utoipa-axum",
+ "utoipa-swagger-ui",
+ "uuid",
+]
+
+[[package]]
 name = "axum-tracing-opentelemetry"
 version = "0.28.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -539,27 +560,6 @@ dependencies = [
  "concurrent-queue",
  "parking",
  "pin-project-lite",
-]
-
-[[package]]
-name = "expense-tracker"
-version = "0.1.0"
-dependencies = [
- "axum",
- "axum-tracing-opentelemetry",
- "clap",
- "dotenv",
- "init-tracing-opentelemetry",
- "serde",
- "serde_json",
- "sqlx",
- "tokio",
- "tower-http",
- "tracing",
- "utoipa",
- "utoipa-axum",
- "utoipa-swagger-ui",
- "uuid",
 ]
 
 [[package]]
