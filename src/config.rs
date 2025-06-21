@@ -7,10 +7,6 @@ pub struct Config {
     pub database_url: String,
     #[clap(long, env, default_value = "8989")]
     pub port: u16,
-    #[clap(long, env)]
-    pub auth_secret: String,
-    #[clap(long, env)]
-    pub token_duration: i64,
 }
 
 pub fn get_config() -> &'static Config {
