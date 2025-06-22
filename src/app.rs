@@ -1,17 +1,18 @@
+mod error;
+mod handlers;
 mod models;
-mod routers;
 
+use std::sync::Arc;
+
+use axum::Router;
 use axum::http::Method;
-use axum::{Extension, Router};
 use axum_tracing_opentelemetry::middleware::{OtelAxumLayer, OtelInResponseLayer};
-use routers::health;
+use handlers::health;
 use sqlx::SqlitePool;
 use tower_http::cors::{Any, CorsLayer};
-use utoipa::{
-    Modify, OpenApi,
-    openapi::security::{ApiKey, ApiKeyValue, SecurityScheme},
-};
-use utoipa_axum::router::OpenApiRouter;
+use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
+use utoipa::{Modify, OpenApi};
+use utoipa_axum::{router::OpenApiRouter, routes};
 use utoipa_swagger_ui::SwaggerUi;
 
 use crate::config::get_config;
@@ -38,20 +39,28 @@ impl Modify for SecurityAddon {
     }
 }
 
+#[derive(Clone)]
+struct AppState {
+    pool: SqlitePool,
+}
+
 pub async fn create_app() -> Result<Router, sqlx::Error> {
     let cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_origin(Any);
 
     let pool = setup_db().await?;
+    let state = Arc::new(AppState { pool });
+
+    let health_route = OpenApiRouter::new().routes(routes!(health::check_health));
 
     let (router, api) = OpenApiRouter::with_openapi(ApiDoc::openapi())
-        .nest("/health", health::get_health_check_router())
+        .nest("/health", health_route)
+        .with_state(state)
         .split_for_parts();
 
     let swagger = SwaggerUi::new("/api-docs/swagger-ui").url("/api-docs/openapi.json", api);
     let router = router
-        .layer(Extension(pool))
         .merge(swagger)
         .layer(OtelInResponseLayer)
         .layer(OtelAxumLayer::default())
