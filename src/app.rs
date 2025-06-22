@@ -8,6 +8,7 @@ use axum::Router;
 use axum::http::Method;
 use axum_tracing_opentelemetry::middleware::{OtelAxumLayer, OtelInResponseLayer};
 use handlers::health;
+use handlers::users;
 use sqlx::SqlitePool;
 use tower_http::cors::{Any, CorsLayer};
 use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
@@ -53,9 +54,11 @@ pub async fn create_app() -> Result<Router, sqlx::Error> {
     let state = Arc::new(AppState { pool });
 
     let health_route = OpenApiRouter::new().routes(routes!(health::check_health));
+    let users_route = OpenApiRouter::new().routes(routes!(users::get_user_by_id));
 
     let (router, api) = OpenApiRouter::with_openapi(ApiDoc::openapi())
         .nest("/health", health_route)
+        .nest("/api/v1/users", users_route)
         .with_state(state)
         .split_for_parts();
 
