@@ -11,7 +11,6 @@ use opentelemetry_otlp::SpanExporter;
 use opentelemetry_sdk::Resource;
 use opentelemetry_sdk::trace::SdkTracerProvider;
 use tokio::net::TcpListener;
-use tracing::subscriber;
 use tracing::{info, span};
 use tracing_subscriber::Registry;
 use tracing_subscriber::prelude::*;
@@ -21,7 +20,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     dotenv().ok();
 
     let resource = Resource::builder()
-        .with_service_name("expenses_tracker")
+        .with_service_name("axum_starter")
         .build();
     let exporter = SpanExporter::builder().with_http().build()?;
 
@@ -30,7 +29,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .with_resource(resource)
         .build();
 
-    let tracer = provider.tracer("expenses_tracker_tracer");
+    let tracer = provider.tracer("axum_starter_tracker");
     let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
 
     if cfg!(debug_assertions) {
@@ -49,7 +48,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let root = span!(tracing::Level::TRACE, "app_start", work_units = 2);
     let _enter = root.enter();
-    info!("Start the server");
+    info!("server is running in {}", get_config().address);
 
     let app = create_app().await?;
     let listener = TcpListener::bind(get_config().address.as_str()).await?;
