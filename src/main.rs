@@ -11,6 +11,7 @@ use opentelemetry_otlp::SpanExporter;
 use opentelemetry_sdk::Resource;
 use opentelemetry_sdk::trace::SdkTracerProvider;
 use tokio::net::TcpListener;
+use tracing::subscriber;
 use tracing::{info, span};
 use tracing_subscriber::Registry;
 use tracing_subscriber::prelude::*;
@@ -30,10 +31,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .build();
 
     let tracer = provider.tracer("expenses_tracker_tracer");
+    let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
 
-    #[cfg(debug_assertions)]
-    {
-        let telemetry = tracing_opentelemetry::layer().with_tracer(tracer.clone());
+    if cfg!(debug_assertions) {
         let fmt_layer = tracing_subscriber::fmt::layer()
             .with_target(false)
             .with_thread_ids(true)
@@ -42,11 +42,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
         let subscriber = Registry::default().with(telemetry).with(fmt_layer);
         tracing::subscriber::set_global_default(subscriber)?;
-    }
-
-    #[cfg(not(debug_assertions))]
-    {
-        let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
+    } else {
         let subscriber = Registry::default().with(telemetry);
         tracing::subscriber::set_global_default(subscriber)?;
     }

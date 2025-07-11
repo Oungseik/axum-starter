@@ -31,9 +31,9 @@
 
           # TODO update the database url
           DATABASE_URL = "sqlite:./database/expanse-tracker.sqlite";
-          OTEL_EXPORTER_OTLP_ENDPOINT = "http://localhost:4317";
+          OTEL_EXPORTER_OTLP_ENDPOINT = "http://localhost:4318";
           OTEL_TRACES_EXPORTER = "otlp";
-          OTEL_EXPORTER_OTLP_PROTOCOL = "grpc";
+          OTEL_EXPORTER_OTLP_PROTOCOL = "http/protobuf";
           STATIC_ASSETS_FOLDER = "static";
           RUSTUP_TOOLCHAIN = "stable";
         };
