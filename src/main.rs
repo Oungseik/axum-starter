@@ -29,7 +29,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .with_resource(resource)
         .build();
 
-    let tracer = provider.tracer("axum_starter_tracker");
+    let tracer = provider.tracer("axum_starter");
     let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
 
     if cfg!(debug_assertions) {
