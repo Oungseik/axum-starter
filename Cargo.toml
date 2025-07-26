@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 axum = { version = "0.8.4" }
-axum-tracing-opentelemetry = "0.28.0"
+axum-tracing-opentelemetry = "0.29.0"
 clap = { version = "4.5.37", features = ["derive", "env"] }
 dotenv = "0.15.0"
 opentelemetry = "0.30.0"
