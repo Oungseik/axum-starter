@@ -53,8 +53,8 @@ pub async fn create_app() -> Result<Router, sqlx::Error> {
     let pool = setup_db().await?;
     let state = Arc::new(AppState { pool });
 
-    let health_route = OpenApiRouter::new().routes(routes!(health::check_health));
-    let users_route = OpenApiRouter::new().routes(routes!(users::get_user_by_id));
+    let health_route = OpenApiRouter::new().routes(routes!(health::check_health::handler));
+    let users_route = OpenApiRouter::new().routes(routes!(users::get_by_id::handler));
 
     let (router, api) = OpenApiRouter::with_openapi(ApiDoc::openapi())
         .nest("/health", health_route)
