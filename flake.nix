@@ -19,8 +19,9 @@
           buildInputs = with pkgs; [
             cargo-audit
             cargo-nextest
-            sqlx-cli
+            cargo-outdated
             cargo-tarpaulin
+            sqlx-cli
             otel-desktop-viewer
 
             # optional dependencies to make RESTapi request from Neovim
