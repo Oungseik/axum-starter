@@ -1,6 +1,5 @@
 mod error;
 mod handlers;
-mod models;
 
 use std::sync::Arc;
 
@@ -9,7 +8,8 @@ use axum::http::Method;
 use axum_tracing_opentelemetry::middleware::{OtelAxumLayer, OtelInResponseLayer};
 use handlers::health;
 use handlers::users;
-use sqlx::SqlitePool;
+use migration::{Migrator, MigratorTrait};
+use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 use tower_http::cors::{Any, CorsLayer};
 use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
 use utoipa::{Modify, OpenApi};
@@ -40,18 +40,18 @@ impl Modify for SecurityAddon {
     }
 }
 
-#[derive(Clone)]
-struct AppState {
-    pool: SqlitePool,
+#[derive(Clone, Debug)]
+pub struct AppState {
+    pub db: DatabaseConnection,
 }
 
-pub async fn create_app() -> Result<Router, sqlx::Error> {
+pub async fn create_app() -> Result<Router, sea_orm::DbErr> {
     let cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_origin(Any);
 
-    let pool = setup_db().await?;
-    let state = Arc::new(AppState { pool });
+    let db = setup_db().await?;
+    let state = Arc::new(AppState { db });
 
     let health_route = OpenApiRouter::new().routes(routes!(health::check_health::handler));
     let users_route = OpenApiRouter::new().routes(routes!(users::get_by_id::handler));
@@ -72,11 +72,10 @@ pub async fn create_app() -> Result<Router, sqlx::Error> {
     Ok(router)
 }
 
-pub async fn setup_db() -> Result<SqlitePool, sqlx::Error> {
-    let pool = sqlx::sqlite::SqlitePoolOptions::new()
-        .max_connections(5)
-        .connect(get_config().database_url.as_str())
-        .await?;
-
-    Ok(pool)
+pub async fn setup_db() -> Result<DatabaseConnection, sea_orm::DbErr> {
+    let mut opt = ConnectOptions::new(get_config().database_url.as_str());
+    opt.max_connections(5);
+    let db = Database::connect(opt).await?;
+    Migrator::up(&db, None).await?;
+    Ok(db)
 }

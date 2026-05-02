@@ -1,3 +1,15 @@
+[workspace]
+members = [".", "entity", "migration"]
+resolver = "3"
+
+[workspace.dependencies]
+sea-orm = { version = "2.0.0-rc.38", features = [
+  "macros",
+  "with-chrono",
+  "runtime-tokio-rustls",
+  "sqlx-sqlite",
+] }
+
 [package]
 name = "axum-starter"
 version = "0.1.0"
@@ -8,19 +20,16 @@ axum = { version = "0.8.9" }
 axum-tracing-opentelemetry = "0.33.1"
 clap = { version = "4.6.1", features = ["derive", "env"] }
 dotenv = "0.15.0"
+entity = { path = "entity" }
+migration = { path = "migration" }
 opentelemetry = "0.31.0"
 opentelemetry-otlp = { version = "0.31.1", features = [
   "http-proto",
   "tokio",
 ] }
 opentelemetry_sdk = { version = "0.31.0", features = ["tokio"] }
+sea-orm = { workspace = true }
 serde = { version = "1.0.228", features = ["derive"] }
-sqlx = { version = "0.8.6", features = [
-  "chrono",
-  "runtime-tokio-rustls",
-  "sqlite",
-  "uuid",
-] }
 tokio = { version = "1.52.1", features = ["macros", "rt-multi-thread", "signal"] }
 tower-http = { version = "0.6.8", features = ["cors"] }
 tracing = "0.1.44"

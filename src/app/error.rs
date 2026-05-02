@@ -14,6 +14,13 @@ pub struct ErrorResponse {
 
 pub enum AppError {
     InternalServerError,
+    NotFound,
+}
+
+impl From<sea_orm::DbErr> for AppError {
+    fn from(_: sea_orm::DbErr) -> Self {
+        AppError::InternalServerError
+    }
 }
 
 impl IntoResponse for AppError {
@@ -23,6 +30,12 @@ impl IntoResponse for AppError {
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(ErrorResponse {
                     message: "Internal server error".into(),
+                }),
+            ),
+            Self::NotFound => (
+                StatusCode::NOT_FOUND,
+                Json(ErrorResponse {
+                    message: "Not found".into(),
                 }),
             ),
         }

@@ -21,7 +21,7 @@
             cargo-nextest
             cargo-outdated
             cargo-tarpaulin
-            sqlx-cli
+            sea-orm-cli
             otel-desktop-viewer
 
             # optional dependencies to make RESTapi request from Neovim
@@ -30,8 +30,7 @@
             sqlite
           ];
 
-          # TODO update the database url
-          DATABASE_URL = "sqlite:./database/expanse-tracker.sqlite";
+          DATABASE_URL = "sqlite:./data.db?mode=rwc";
           OTEL_EXPORTER_OTLP_ENDPOINT = "http://localhost:4318";
           OTEL_TRACES_EXPORTER = "otlp";
           OTEL_EXPORTER_OTLP_PROTOCOL = "http/protobuf";
