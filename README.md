@@ -1,6 +1,6 @@
 # Axum Starter Project
 
-A basic starter for Axum with SQLx and preconfigured the OpenAPI, Opentelemetry.
+A basic starter for Axum with SeaORM and preconfigured OpenAPI, OpenTelemetry.
 
 ## Table of Contents
 
@@ -12,7 +12,7 @@ A basic starter for Axum with SQLx and preconfigured the OpenAPI, Opentelemetry.
 This project is a starter template for building web applications using the following technologies:
 
 - [**Axum**](https://github.com/tokio-rs/axum): A web framework for building robust and scalable web applications.
-- [**SQLx**](https://github.com/launchbadge/sqlx): An async SQL toolkit for interacting with databases.
+- [**SeaORM**](https://github.com/SeaQL/sea-orm): An async ORM built on top of sqlx for interacting with databases.
 - [**Utoipa**](https://github.com/juhaku/utoipa): Documentation and specification for APIs.
 - **OpenTelemetry**: Observability tools for monitoring and tracing.
 
@@ -20,7 +20,7 @@ This project is a starter template for building web applications using the follo
 
 Change the database url in the [flake.nix](./flake.nix) or update it in the `.env` if you are not using Nix.
 
-If you want to use Postgres, change the connection setting in [app.rs](./src/app.rs).
+If you want to use Postgres, update the database URL and enable the `sqlx-postgres` feature on the `sea-orm` dependency.
 
 Configurations are loaded in the [config.rs](./src/config.rs) and share across the app.
 
